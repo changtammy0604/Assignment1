@@ -89,7 +89,41 @@ def depthFirstSearch(problem: SearchProblem) -> List[Directions]:
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
+    start = problem.getStartState() #目前所在的座標
+    stack = util.Stack()    #記下走過的座標的successors
+    steps = [start]              #走過的座標, using list because need to use "in" and "not in"
+    directions = []         #the direction that is going to return
+
+    while not problem.isGoalState(start):                               #Start is not the goal, continue
+        successors_list = problem.getSuccessors(start)
+        while True:                                          
+            if not successors_list:                                     #successors list is empty
+                if stack.isEmpty() or not directions or not steps:      #stack or directions or steps is empty, there's no way to reach the goal
+                    print("There's no way to reach the goal!")
+                    return []                                           
+                start = steps.pop()                                     #return to least step
+                directions.pop()
+                successors_list = stack.pop()
+                continue
+
+            successor = successors_list.pop()                           #successor: ((x, y), "direction", cost)
+
+            if successor[0] not in steps:                               #this point hasn't been visited
+                stack.push(successors_list)
+                start = successor[0]
+                steps.append(start)
+                directions.append(successor[1])
+
+                break
+    
+    print(steps)
+    print(directions)
+    return directions
+    
+    print("Start:", problem.getStartState())
+    print("Goal:", problem.goal)
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem) -> List[Directions]:
